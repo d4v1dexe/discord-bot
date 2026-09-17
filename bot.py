@@ -1,7 +1,12 @@
 import os
+from pathlib import Path
+
 import discord
 import random
+from dotenv import load_dotenv
 from joke import get_random_joke
+
+load_dotenv(Path(__file__).parent / '.env')
 
 joke = joke
 
