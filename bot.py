@@ -1,3 +1,4 @@
+import os
 import discord
 import random
 from joke import get_random_joke
@@ -32,4 +33,4 @@ async def on_message(message):
         joke = get_random_joke()
         await message.channel.send(f"{joke['setup']}\n||{joke['punchline']}||")            
 
-client.run('REDACTED_TOKEN_WAS_ROTATED') # discord token
+client.run(os.environ["DISCORD_TOKEN"])
