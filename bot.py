@@ -52,5 +52,7 @@ async def on_message(message):
         
         if gender == "female":
             await message.channel.send("Scheiß Foid")
+        else:
+            await message.channel.send("Geiler Typ")
     
 client.run(os.environ["DISCORD_TOKEN"])
