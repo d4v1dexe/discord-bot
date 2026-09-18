@@ -26,10 +26,16 @@ async def on_message(message):
 
     if message.content.startswith('$joke'):
         joke = get_random_joke()
-        await message.channel.send(f"{joke['setup']}\n||{joke['punchline']}||")
+        if joke['type'] == 'twopart':
+            await message.channel.send(f"{joke['setup']}\n||{joke['delivery']}||")
+        else:
+            await message.channel.send(joke['joke'])
 
     elif message.content.startswith('$michi'):
         await message.channel.send("ist ein Idiot")
     elif message.content.startswith('$lorenz'):
         await message.channel.send("ist behindert")
+    elif message.content.startswith('$david'):
+        await message.channel.send("mag keine Frauen")    
+    
 client.run(os.environ["DISCORD_TOKEN"])
