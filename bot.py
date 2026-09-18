@@ -30,5 +30,6 @@ async def on_message(message):
 
     elif message.content.startswith('$michi'):
         await message.channel.send("ist ein Idiot")
-
+    elif message.content.startswith('$lorenz'):
+        await message.channel.send("ist behindert")
 client.run(os.environ["DISCORD_TOKEN"])
