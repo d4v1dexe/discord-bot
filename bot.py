@@ -14,8 +14,6 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-
-
 @client.event
 async def on_ready():
     await client.user.edit(username='bottiger bot')
@@ -36,6 +34,13 @@ async def on_message(message):
         return 
     if message.content.startswith('$joke'):
         joke = get_random_joke()
-        await message.channel.send(f"{joke['setup']}\n||{joke['punchline']}||")            
+        await message.channel.send(f"{joke['setup']}\n||{joke['punchline']}||")
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.content.startswith('$michi'):
+        await message.channel.send("ist ein Idiot")
 
 client.run(os.environ["DISCORD_TOKEN"])
