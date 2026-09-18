@@ -1,18 +1,15 @@
-import random
-import json
+import random, json, urllib.request
 from pathlib import Path
 
-JOKES_FILE = Path(__file__).parent / 'jokes.json'
-
-with open(JOKES_FILE, encoding='utf-8') as f:
-    jokes = json.load(f)
+url = "https://v2.jokeapi.dev/joke/Programming"
+response = urllib.request.urlopen(url)
+joke = json.loads(response.read())
 
 def get_random_joke():
-    return random.choice(jokes)
+    print(joke['setup'] if joke['type'] == 'twopart' else joke['joke'])
+    if joke['type'] == 'twopart':
+        print(joke['delivery'])
+        
 
 if __name__ == '__main__':
-    while True:
-        joke = get_random_joke()
-        print(joke['setup'])
-        print(joke['punchline'])
-        print()
+    get_random_joke()
