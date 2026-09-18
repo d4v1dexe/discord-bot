@@ -5,7 +5,7 @@ import discord
 import random
 from dotenv import load_dotenv
 from joke import get_random_joke
-from name_gender_classisfier import name_gender_classifier
+from foid_detecter import name_gender_classifier
 
 load_dotenv(Path(__file__).parent / '.env')
 
