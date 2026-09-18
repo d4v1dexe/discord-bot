@@ -8,14 +8,13 @@ from joke import get_random_joke
 
 load_dotenv(Path(__file__).parent / '.env')
 
-joke = joke
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-def witz():
+
 
 @client.event
 async def on_ready():
@@ -27,8 +26,9 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$michi')
+    if message.content.startswith('$michi'):
         #michi ding
+        return
 
 @client.event
 async def on_message(message):
