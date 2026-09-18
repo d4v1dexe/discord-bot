@@ -1,10 +1,11 @@
-import os
+import os, re
 from pathlib import Path
 
 import discord
 import random
 from dotenv import load_dotenv
 from joke import get_random_joke
+from name_gender_classisfier import name_gender_classifier
 
 load_dotenv(Path(__file__).parent / '.env')
 
@@ -13,6 +14,10 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
+
+def clean_username(raw_name: str) -> str:
+    match = re.match(r"[A-Za-z]+", raw_name)
+    return match.group(0) if match else raw_name
 
 @client.event
 async def on_ready():
@@ -36,6 +41,16 @@ async def on_message(message):
     elif message.content.startswith('$lorenz'):
         await message.channel.send("ist behindert")
     elif message.content.startswith('$david'):
-        await message.channel.send("mag keine Frauen")    
+        await message.channel.send("mag keine Frauen")
+    elif message.content.startswith('$eva'):
+        for _ in range(10):
+            await message.channel.send("Foid! Foid! Foid!")
+    elif message.content.startswith('$gender'):
+        raw_name = message.author.display_name
+        name = clean_username(raw_name)
+        gender = name_gender_classifier(name)
+        
+        if gender == "female":
+            await message.channel.send("Scheiß Foid")
     
 client.run(os.environ["DISCORD_TOKEN"])
