@@ -1,10 +1,4 @@
-# secrets - never commit these
-.env
-*.env
-token.txt
-
-# python
 __pycache__/
-*.py[cod]
-.venv/
-venv/
+*.pyc
+.env
+fishing_data.json
