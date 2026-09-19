@@ -1,4 +1,13 @@
-__pycache__/
-*.pyc
+# secrets - never commit these
 .env
+*.env
+token.txt
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# fishing minigame save data (per-server/per-deployment state)
 fishing_data.json
