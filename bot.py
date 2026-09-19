@@ -21,6 +21,15 @@ def clean_username(raw_name: str) -> str:
 REROLL_EMOJI = '🔄'
 JOKE_FETCH_FAILED = "Couldn't fetch a joke right now, try again later."
 
+# Command name -> short description, used to build the $help output.
+COMMANDS = {
+    '$joke': 'Sends a random programming joke (react with 🔄 to reroll)',
+    '$michi': 'ist ein Idiot',
+    '$lorenz': 'ist behindert',
+    '$david': 'mag keine Frauen',
+    '$help': 'Shows this list of commands',
+}
+
 # Message IDs of joke messages posted by the bot, so we know which
 # messages are eligible to be rerolled via the 🔄 reaction.
 joke_messages = set()
@@ -30,6 +39,11 @@ def format_joke(joke):
     if joke['type'] == 'twopart':
         return f"{joke['setup']}\n||{joke['delivery']}||"
     return joke['joke']
+
+
+def format_help():
+    lines = [f'{name} - {description}' for name, description in COMMANDS.items()]
+    return 'Available commands:\n' + '\n'.join(lines)
 
 
 @client.event
@@ -64,13 +78,15 @@ async def on_message(message):
         raw_name = message.author.display_name
         name = clean_username(raw_name)
         gender = name_gender_classifier(name)
-        
+
         if gender == "female":
             await message.channel.send("Scheiß Foid")
         else:
             await message.channel.send("Geiler Typ")
-    
-        await message.channel.send("mag keine Frauen")    
+
+        await message.channel.send("mag keine Frauen")
+    elif message.content.startswith('$help'):
+        await message.channel.send(format_help())
 
 @client.event
 async def on_reaction_add(reaction, user):
