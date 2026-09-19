@@ -8,3 +8,6 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+# fishing minigame save data (per-server/per-deployment state)
+fishing_data.json
