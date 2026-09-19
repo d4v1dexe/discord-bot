@@ -6,6 +6,7 @@ import random
 from dotenv import load_dotenv
 from joke import get_random_joke
 from foid_detecter import name_gender_classifier
+import fishing
 
 load_dotenv(Path(__file__).parent / '.env')
 
@@ -24,6 +25,12 @@ JOKE_FETCH_FAILED = "Couldn't fetch a joke right now, try again later."
 # Command name -> short description, used to build the $help output.
 COMMANDS = {
     '$joke': 'Sends a random programming joke (react with 🔄 to reroll)',
+    '$angeln': 'Wirft die Angel aus und fängt (vielleicht) einen Fisch',
+    '$inventar': 'Zeigt deine gefangenen Fische',
+    '$verkaufen': 'Verkauft alle Fische, oder $verkaufen <fisch> für einen bestimmten',
+    '$shop': 'Zeigt die Rutenstufen und was sie kosten/freischalten',
+    '$rute': 'Kauft das nächste Rutenupgrade, wenn genug Coins da sind',
+    '$kontostand': 'Zeigt deinen Coins-Kontostand',
     '$michi': 'ist ein Idiot',
     '$lorenz': 'ist behindert',
     '$david': 'mag keine Frauen',
@@ -64,6 +71,45 @@ async def on_message(message):
         sent = await message.channel.send(format_joke(joke))
         joke_messages.add(sent.id)
         await sent.add_reaction(REROLL_EMOJI)
+
+    elif message.content.startswith('$angeln'):
+        fish, error = fishing.cast(message.author.id)
+        if error:
+            await message.channel.send(error)
+            return
+        await message.channel.send(
+            f'{message.author.mention} hat einen **{fish["name"]}** {fish["emoji"]} gefangen! '
+            f'(Wert: {fish["value"]} Coins, verkaufen mit `$verkaufen`)'
+        )
+
+    elif message.content.startswith('$inventar'):
+        await message.channel.send(fishing.inventory_text(message.author.id))
+
+    elif message.content.startswith('$verkaufen'):
+        rest = message.content[len('$verkaufen'):].strip()
+        fish_name = rest if rest else None
+        earned, lines = fishing.sell(message.author.id, fish_name)
+        if lines is None:
+            if fish_name:
+                await message.channel.send(f'Du hast keinen "{fish_name}" zum Verkaufen.')
+            else:
+                await message.channel.send('Du hast nichts zum Verkaufen. Erst angeln mit `$angeln`!')
+            return
+        await message.channel.send(
+            'Verkauft:\n' + '\n'.join(lines) + f'\n\nGesamt: +{earned} Coins'
+        )
+
+    elif message.content.startswith('$shop'):
+        await message.channel.send(fishing.shop_text(message.author.id))
+
+    elif message.content.startswith('$rute'):
+        success, text = fishing.upgrade_rod(message.author.id)
+        await message.channel.send(text)
+
+    elif message.content.startswith('$kontostand'):
+        await message.channel.send(
+            f'{message.author.mention} hat {fishing.balance(message.author.id)} Coins.'
+        )
 
     elif message.content.startswith('$michi'):
         await message.channel.send("ist ein Idiot")
