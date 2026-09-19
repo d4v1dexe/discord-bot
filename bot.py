@@ -15,6 +15,7 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 REROLL_EMOJI = '🔄'
+JOKE_FETCH_FAILED = "Couldn't fetch a joke right now, try again later."
 
 # Message IDs of joke messages posted by the bot, so we know which
 # messages are eligible to be rerolled via the 🔄 reaction.
@@ -39,6 +40,9 @@ async def on_message(message):
 
     if message.content.startswith('$joke'):
         joke = get_random_joke()
+        if joke is None:
+            await message.channel.send(JOKE_FETCH_FAILED)
+            return
         sent = await message.channel.send(format_joke(joke))
         joke_messages.add(sent.id)
         await sent.add_reaction(REROLL_EMOJI)
@@ -63,6 +67,12 @@ async def on_reaction_add(reaction, user):
         return
 
     joke = get_random_joke()
+    if joke is None:
+        try:
+            await reaction.remove(user)
+        except discord.HTTPException:
+            pass
+        return
     await message.edit(content=format_joke(joke))
     try:
         await reaction.remove(user)
