@@ -88,6 +88,10 @@ async def on_message(message):
     elif message.content.startswith('$help'):
         await message.channel.send(format_help())
 
+    elif message.content.startswith("$smile"):
+        for i in range(10):
+            await message.channel.send(":)")
+
 @client.event
 async def on_reaction_add(reaction, user):
     if user == client.user:
