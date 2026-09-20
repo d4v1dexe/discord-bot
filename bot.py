@@ -9,6 +9,16 @@ import fishing
 
 load_dotenv(Path(__file__).parent / '.env')
 
+# relativ zum Skript, nicht zum Arbeitsverzeichnis: sonst startet der Bot nur,
+# wenn er aus genau diesem Ordner heraus aufgerufen wird
+screenshot_path = Path(__file__).parent / 'pictures'
+
+# fehlt der Ordner, soll $picture "keine Bilder gefunden" sagen - nicht der
+# ganze Bot beim Import abstuerzen
+screenshots = ([f.name for f in screenshot_path.iterdir() if f.is_file()]
+               if screenshot_path.is_dir() else [])
+
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -115,7 +125,15 @@ async def on_message(message):
         await message.channel.send("mag keine Frauen")
     elif message.content.startswith('$help'):
         await message.channel.send(format_help())
+    elif message.content.startswith('$picture'):
+        if screenshots:
+            random_screenshot = random.choice(screenshots)
 
+            path_screenshot = screenshot_path / random_screenshot
+            screenshot = discord.File(path_screenshot)
+            await message.channel.send(file=screenshot)
+        else:
+            await message.channel.send('keine Bilder gefunden')
 @client.event
 async def on_reaction_add(reaction, user):
     if user == client.user:
